@@ -24,4 +24,5 @@ bcrypt = Bcrypt(app)
 
 from shop.admin import routes as admin_routes
 from shop.products import routes as product_routes
+from shop.carts import carts
 
