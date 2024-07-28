@@ -9,7 +9,7 @@ class AddproductForm(FlaskForm):
   discount = IntegerField('Discount',default=0)
   stock = IntegerField('Stock',[validators.DataRequired()]) 
   desc = TextAreaField('Description',[validators.DataRequired()])
-  colors = TextAreaField('Colors',[validators.DataRequired()])
+  colors = TextAreaField('Type',[validators.DataRequired()])
 
   image_1 = FileField('Image 1',validators=[FileAllowed(['jpg','png','gif','jpeg'],'images only please')])
   image_2 = FileField('Image 2',validators=[FileAllowed(['jpg','png','gif','jpeg'],'images only please')])

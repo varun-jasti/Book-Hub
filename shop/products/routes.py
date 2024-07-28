@@ -1,28 +1,46 @@
 from flask import redirect,render_template,url_for,flash,request,session,current_app
-from shop import db,app,photos
+from shop import db,app,photos,search
 from .models import Brand,Category  
 from .models import Addproducts
 from .forms import AddproductForm
 
 import secrets,os
 
+def barnds():
+  barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
+  return barnds
+
+def categories():
+    categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
+    return categories
+
+
+
+
+
+
 @app.route('/')
 def home(): 
   page = request.args.get('page',1,type=int)
-  products = Addproducts.query.filter(Addproducts.stock > 0).order_by(Addproducts.id.desc()).paginate(page=page,per_page=8)
-  barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
-  categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
-  return render_template('products/index.html',products=products,barnds=barnds,categories=categories)
+  products = Addproducts.query.filter(Addproducts.stock > 0).order_by(Addproducts.id.desc()).paginate(page=page,per_page=10)
+  # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
+  return render_template('products/index.html',products=products,barnds=barnds(),categories=categories())
+
+@app.route('/result')
+def result():
+  searchword = request.args.get('q')
+  products =Addproducts.query_msearch(searchword, fields=['name','desc'],limits=6)
+  return render_template('products/result.html',products=products,barnds=barnds(),categories=categories())
 
 
-
+ 
 @app.route('/product/<int:id>')
 def single_page(id):
   product = Addproducts.query.get_or_404(id)
-  barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
-  categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
+  # barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
+  # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
  
-  return render_template('products/single_page.html',product=product,barnds=barnds,categories=categories)
+  return render_template('products/single_page.html',product=product,barnds=barnds(),categories=categories())
 
 
 
@@ -32,19 +50,19 @@ def single_page(id):
 def get_brand(id):
   get_b = Brand.query.filter_by(id=id).first_or_404()
   page = request.args.get('page',1,type=int)
-  brand = Addproducts.query.filter_by(brand = get_b).paginate(page=page,per_page=4)
-  barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
-  categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
-  return render_template('products/index.html',brand=brand,barnds=barnds,categories=categories,get_b=get_b)
+  brand = Addproducts.query.filter_by(brand = get_b).paginate(page=page,per_page=10)
+  # barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
+  # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
+  return render_template('products/index.html',brand=brand,barnds=barnds(),categories=categories(),get_b=get_b)
 
 @app.route('/categories/<int:id>')
 def get_category(id):
   page = request.args.get('page',1,type=int)
   get_cat = Category.query.filter_by(id=id).first_or_404()
-  get_cat_prod = Addproducts.query.filter_by(category=get_cat).paginate(page=page,per_page=4)
-  barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
-  categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
-  return render_template('products/index.html',get_cat_prod=get_cat_prod,categories=categories,barnds=barnds,get_cat=get_cat)
+  get_cat_prod = Addproducts.query.filter_by(category=get_cat).paginate(page=page,per_page=10)
+  # barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
+  # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
+  return render_template('products/index.html',get_cat_prod=get_cat_prod,categories=categories(),barnds=barnds(),get_cat=get_cat)
 
 
 

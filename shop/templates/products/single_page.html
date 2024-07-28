@@ -2,8 +2,10 @@
 
 {% block content %}
 
+{% include 'navbar.html' %} 
+
 <!-- navbar starts -->
-<div class="container">
+<!-- <div class="container">
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">Home</a>
@@ -49,7 +51,7 @@
     </div>
   </div>
 </nav>
-</div>
+</div> -->
 
 <!-- navbar end -->
 <div class="container mt-5">
@@ -59,18 +61,18 @@
 
     </div>
     <div class="col-md-6">
-    <h4>Product Name : {{product.name}}</h4>
-    <p> Product Price : Rs.{{product.price}}</p>
+    <h4>Name : {{product.name}}</h4>
+    <p>Price : Rs.{{product.price}}</p>
     {% if product.discount > 0  %}
-    <p>Product Discount : {{product.discount}} %</p>
+    <p>Discount : {{product.discount}} %</p>
     {% endif %}
     <hr>
-    <b>Prodcut Description</b>
+    <b>Description</b>
     <p>{{product.desc}}</p>
     <hr>
     <form action="{{url_for('AddCart')}}" method="post">
       <input type="hidden" name="product_id" value="{{product.id}}">
-      <button type="submit" class="btn btn-sm btn-warning">Add Cart</button>
+      <button type="submit" class="btn btn-sm btn-warning">Add to Cart</button>
       <label for="">Quantity:</label>
       <input type="number" name="quantity" id="" value="1" min="1" max={{product.stock}}>
       {% set colors = product.colors.split(',') %}

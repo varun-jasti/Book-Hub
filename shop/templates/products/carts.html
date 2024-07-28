@@ -48,7 +48,7 @@
           <td><input type="number" name="quantity" min="1" max="10" value="{{product.quantity}}"></td>
 
           {% if product.discount  %}
-          <td>{{product.discount}}% &nbsp; &nbsp; &nbsp; is {{discount}}</td>
+          <td>{{product.discount}} % &nbsp; &nbsp;  is {{discount}}</td>
           {% else %}
           <td></td>
           {% endif %}      
@@ -59,19 +59,25 @@
           </td>
         </form>
           <td>
-            <a href="#">Remove</a>
+            <a href="{{url_for('deleteitem',id=key)}} " class="btn btn-sm btn-danger">Remove</a>
           </td>
         </tr>
         {% endfor %}
+      </tbody>
+      </table>
+        <table class="table table-sm">
         <tr>
           <td></td>
-          <td><a href="/">Continue Shopping</a></td>
+          <td><a href="{{url_for('get_order')}}" class="btn btn-success btn-sm">Order Now</a></td>
+          <td width="35%"></td>
           <td colspan="3"> <h4>Tax: Rs.{{tax}}</h4></td>
           <td colspan="4"><h4>Grand Total: Rs.{{grand_total}}</h4></td>
+          <td><a href="{{url_for('clearcart')}}" class="btn btn-danger btn-sm float-right mr-4">Clear Cart</a></td>
         </tr>
-      </tbody>
+      </table>
+    
 
-    </table>
+   
   </div>
 </div>
 </div>

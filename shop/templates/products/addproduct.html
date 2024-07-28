@@ -9,18 +9,18 @@
   <div class="row">
   <div class="col-md-2"></div>
   <div class="col-md-8">
-    <h2 class="text-center bg-info p-2"> Add a Product</h2>
+    <h2 class="text-center bg-info p-2 mt-2"> Add a Product</h2>
     {% from "_formhelpers.html" import render_field %}
 
     <form action="" method="POST" enctype="multipart/form-data">
-      {{ render_field(form.name, class="form-control", placeholder = "Add Product name")}}
-      {{ render_field(form.price, class="form-control", placeholder = "Add Product price")}}
-      {{ render_field(form.discount, class="form-control", placeholder = "Add Product discount")}}
-      {{ render_field(form.stock, class="form-control", placeholder = "Add Product stock")}}
+      {{ render_field(form.name, class="form-control", placeholder = "Add Book Name")}}
+      {{ render_field(form.price, class="form-control", placeholder = "Add Book Price")}}
+      {{ render_field(form.discount, class="form-control", placeholder = "Add Book Discount")}}
+      {{ render_field(form.stock, class="form-control", placeholder = "Add Book Stock")}}
      
-      <label for="brand">Add a brand</label>
+      <label for="brand">Add a Brand</label>
       <select name="brand" id="brand" class="form-control">
-        <option value=""> Select a brand</option>
+        <option value=""> Select a Brand</option>
         {% for brand in brands %}
       <option value="{{ brand.id }}">{{brand.name}}</option>
        {% endfor %}
@@ -36,8 +36,8 @@
       
       
 
-      {{ render_field(form.colors, class="form-control", placeholder = "Add Product colors")}}
-      {{ render_field(form.desc, class="form-control", placeholder = "Add Product detail",rows="10")}}
+      {{ render_field(form.colors, class="form-control", placeholder = "Add Book Type")}}
+      {{ render_field(form.desc, class="form-control", placeholder = "Add Book details",rows="10")}}
 
       <div class="container">
         <div class="row">
@@ -48,7 +48,7 @@
       </div>
 
     
-    <button type="submit" class="btn btn-ouline-info mt-4">Add Product</button>
+    <button type="submit" class="btn btn-info mt-4">Add Book</button>
 
     </form>
   </div>

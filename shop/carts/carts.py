@@ -1,6 +1,7 @@
 from flask import redirect,render_template,url_for,flash,request,session,current_app
 from shop import db,app
 from shop.products.models import Addproducts
+from shop.products.routes import barnds,categories
 import json
 
 
@@ -16,7 +17,7 @@ def MergeDicts(dict1,dict2):
 def AddCart():
   try:
     product_id = request.form.get('product_id')
-    quantity = request.form.get('quantity')
+    quantity = int(request.form.get('quantity'))
     colors = request.form.get('colors')
     product = Addproducts.query.filter_by(id=product_id).first()
     if product_id and quantity and colors and request.method == "POST":
@@ -26,7 +27,11 @@ def AddCart():
       if 'Shoppingcart' in session:
         print(session['Shoppingcart'])
         if product_id in session['Shoppingcart']:
-          print("This product is already in your cart")
+          for key,item in session['Shoppingcart'].items():
+            if int(key) == int(product_id):
+              session.modified = True
+              item['quantity'] +=1
+          
 
         else:
           session['Shoppingcart']=MergeDicts(session['Shoppingcart'],DictItems)
@@ -45,8 +50,8 @@ def AddCart():
 
 @app.route('/carts')
 def getCart():
-  if 'Shoppingcart' not in session:
-    return redirect(request.referrer)
+  if 'Shoppingcart' not in session or len(session['Shoppingcart'])<=0:
+    return redirect(url_for('home'))
   sub_total = 0
   grand_total = 0
   for key, product in session['Shoppingcart'].items():
@@ -56,7 +61,7 @@ def getCart():
     tax = ("%.2f"%(.06 *float(sub_total)))
     grand_total = float("%.2f" % (1.06 * sub_total))
 
-  return render_template('products/carts.html',tax=tax,grand_total=grand_total)
+  return render_template('products/carts.html',tax=tax,grand_total=grand_total,barnds=barnds(),categories=categories())
 
 
 
@@ -73,7 +78,7 @@ def empty_cart():
 @app.route('/updatecart/<int:code>',methods=['POST'])
 
 def updatecart(code):
-  if 'Shoppingcart' not in session and len(session['Shoppingcart'])<=0:
+  if 'Shoppingcart' not in session or len(session['Shoppingcart'])<=0:
     return redirect(url_for('home'))
   if request.method=="POST":
     quantity = request.form.get('quantity')
@@ -89,7 +94,31 @@ def updatecart(code):
     except Exception as e:
       print(e)
       return redirect(url_for('getCart'))
+
+
+@app.route('/deleteitem/<int:id>')
+def deleteitem(id):
+  if 'Shoppingcart' not in session or len(session['Shoppingcart'])<=0:
+    return redirect(url_for('home'))
   
+  try:
+    session.modified=True
+    for key,item in session['Shoppingcart'].items():
+      if int(key) == id:
+        session['Shoppingcart'].pop(key,None)
+        return redirect(url_for('getCart'))
+    
+  except Exception as e:
+    print(e)
+    return redirect(url_for('getCart'))
+
+@app.route('/clearcart')
+def clearcart():
+  try:
+    session.pop('Shoppingcart',None)
+    return redirect(url_for('home'))
+  except Exception as e:
+    print(e)
 
 
 

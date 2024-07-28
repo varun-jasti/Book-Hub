@@ -5,6 +5,7 @@ from datetime import datetime
 from shop.products.forms import AddproductForm
 
 class Addproducts(db.Model):
+    __searchable__ = ['name','desc'] 
     __tablename__ = 'addproducts'
 
     id = db.Column(db.Integer, primary_key=True)
