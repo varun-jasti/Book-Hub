@@ -191,27 +191,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Sample Imagess of our project
 
-![image_1](sample_images/image_1.png)\
+![image_1](sample_images/image_1.png)
 
 
 
-<table>
-  <tr>
-    <td><img src="sample_images/image_2.png" alt="Image 2" width="150" height="150"></td>
-    <td><img src="sample_images/image_3.png" alt="Image 3" width="150" height="150"></td>
-    <td><img src="sample_images/image_4.png" alt="Image 4" width="150" height="150"></td>
-  </tr>
-  <tr>
-    <td><img src="sample_images/image_5.png" alt="Image 5" width="150" height="150"></td>
-    <td><img src="sample_images/image_6.png" alt="Image 6" width="150" height="150"></td>
-    <td><img src="sample_images/image_7.png" alt="Image 7" width="150" height="150"></td>
-  </tr>
-  <tr>
-    <td><img src="sample_images/image_8.png" alt="Image 8" width="150" height="150"></td>
-    <td><img src="sample_images/image_9.png" alt="Image 9" width="150" height="150"></td>
-    <td><img src="sample_images/image_10.png" alt="Image 10" width="150" height="150"></td>
-  </tr>
-</table>
+| ![Image 2](sample_images/image_2.png) | ![Image 3](sample_images/image_3.png) | ![Image 4](sample_images/image_4.png) |
+|:--------------------------------------:|:--------------------------------------:|:--------------------------------------:|
+| ![Image 5](sample_images/image_5.png) | ![Image 6](sample_images/image_6.png) | ![Image 7](sample_images/image_7.png) |
+| ![Image 8](sample_images/image_8.png) | ![Image 9](sample_images/image_9.png) | ![Image 10](sample_images/image_10.png) |
+
 
 
 
