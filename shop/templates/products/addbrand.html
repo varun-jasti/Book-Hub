@@ -2,66 +2,61 @@
 
 {% block content %}
 
-<div class="container">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/admin"><h3>Admin</h3></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/admin">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/brands">Brands</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/category">Categories</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Add Products
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{url_for('addproduct')}}">Add product</a></li>
-              <li> <a class="dropdown-item" href="{{url_for('addbrand')}}">Add brand</a></li>
-              <li><a class="dropdown-item" href="{{url_for('addcat')}}">Add category</a></li>
-            </ul>
-          </li>
-        </ul>
+{% include 'admin/navbar1.html' %}
+
+
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow-sm">
+        <div class="card-body">
+          <div class="text-center mb-4">
+            <div class="logo-container d-inline-block">
+              <img src="{{ url_for('static', filename='images/Logo.jpg') }}" alt="Logo" class="img-fluid">
+            </div>
+          </div>
+          {% include "_messages.html" %}
+          {% if brands %}
+            <h2 class="text-center mb-4">Add a Brand</h2>
+            <form action="" method="POST">
+              <div class="mb-3">
+                <input type="text" name="brand" class="form-control" placeholder="Brand Name" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Brand</button>
+            </form>
+          {% else %}
+            <h2 class="text-center mb-4">Add a Category</h2>
+            <form action="" method="POST">
+              <div class="mb-3">
+                <input type="text" name="category" class="form-control" placeholder="Category Name" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Add Category</button>
+            </form>
+          {% endif %}
+        </div>
       </div>
     </div>
-  </nav>
-
-</div>
-
-
-<div class="container mt-3">
-  <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-      {% include "_messages.html" %}
-      {% if brands %}
-      <h1 class="text-center mt-5">Add a brand</h1>
-      <form action="" method="POST">
-      <input  type="text" name="brand" class ="form-control"> 
-      <input  type="submit" value="Add Author" class ="btn btn-info mt-2">
-      </form>
-      {% else %}
-      <h1 class="text-center mt-5">Add Category</h1>
-      <form action="" method="POST">
-      <input  type="text" name="category" class ="form-control"> 
-      <input  type="submit" value="Add Category" class ="btn btn-info mt-2">
-      </form>
-      {% endif %}
-
-    </div>
-    <div class="col-md-3"></div>
-    
   </div>
 </div>
+
+<style>
+  .logo-container {
+    width: 150px; 
+    height: 150px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    overflow: hidden;
+  }
+
+  .logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+  }
+</style>
 
 {% endblock content %}
 

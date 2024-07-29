@@ -1,38 +1,75 @@
 {% extends "layout.html" %}
 
 {% block content %}
-{% include 'navbar.html' %}
+{% include 'admin/navbar1.html' %}
 
 
-<div class="container mt-3">
-  <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
       {% include "_messages.html" %}
       {% if updatebrand %}
-      <h1 class="text-center mt-5">Add a brand</h1>
-      <form action="" method="POST">
-      <input  type="text" name="brand" class ="form-control" value = "{{updatebrand.name}}"> 
-      <input  type="submit" value="Update Brand" class ="btn btn-info mt-2">
-      </form>
-      <a href="{{url_for('brands')}}" class = "btn btn-warning" style = "margin-top: -65px; margin-left: 140px;">Cancel</a>
-
-
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="text-center mb-4">
+              <div class="logo-container d-inline-block">
+                <img src="{{ url_for('static', filename='images/Logo.jpg') }}" alt="Logo" class="img-fluid">
+              </div>
+            </div>
+            <h1 class="text-center mb-4">Update Brand</h1>
+            <form action="" method="POST">
+              <div class="mb-3">
+                <label for="brand" class="form-label">Brand Name</label>
+                <input type="text" id="brand" name="brand" class="form-control" value="{{ updatebrand.name }}" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Update Brand</button>
+              <a href="{{ url_for('brands') }}" class="btn btn-secondary ms-2">Cancel</a>
+            </form>
+          </div>
+        </div>
       {% else %}
-      <h1 class="text-center mt-5">Add a Category</h1>
-      <form action="" method="POST">
-      <input  type="text" name="category" class ="form-control" value = "{{updatecat.name}}"> 
-      <input  type="submit" value="Update Category" class ="btn btn-info mt-2">
-      </form>
-      <a href="{{url_for('category')}}" class = "btn btn-warning" style = "margin-top: -65px; margin-left: 160px;">Cancel</a>
-
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <div class="text-center mb-4">
+              <div class="logo-container d-inline-block">
+                <img src="{{ url_for('static', filename='images/Logo.jpg') }}" alt="Logo" class="img-fluid">
+              </div>
+            </div>
+            <h1 class="text-center mb-4">Update Category</h1>
+            <form action="" method="POST">
+              <div class="mb-3">
+                <label for="category" class="form-label">Category Name</label>
+                <input type="text" id="category" name="category" class="form-control" value="{{ updatecat.name }}" required>
+              </div>
+              <button type="submit" class="btn btn-primary">Update Category</button>
+              <a href="{{ url_for('category') }}" class="btn btn-secondary ms-2">Cancel</a>
+            </form>
+          </div>
+        </div>
       {% endif %}
-
     </div>
-    <div class="col-md-3"></div>
-    
   </div>
 </div>
 
+
+
+<style>
+  .logo-container {
+    width: 150px; 
+    height: 150px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    overflow: hidden;
+  }
+
+  .logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+  }
+</style>
 {% endblock content %}
 

@@ -14,7 +14,9 @@ def admin():
   if 'email' not in session:
      flash('Please login first','danger')
      return redirect(url_for('login'))
-  products = Addproducts.query.all()
+  page = request.args.get('page',1,type=int)
+  products = Addproducts.query.order_by(Addproducts.id.desc()).paginate(page=page,per_page=15)
+ 
   return render_template('admin/index.html',title= "Admin Page",products=products)
 
 
@@ -23,7 +25,10 @@ def brands():
    if 'email' not in session:
      flash('Please login first','danger')
      return redirect(url_for('login'))
-   brands = Brand.query.order_by(Brand.id.desc()).all()
+   # brands = Brand.query.order_by(Brand.id.desc()).all()
+   page = request.args.get('page',1,type=int)
+   brands = Brand.query.order_by(Brand.id.desc()).paginate(page=page,per_page=15)
+ 
    return render_template('admin/brand.html',title = "Brand Page",brands=brands)
 
 @app.route('/category', methods=['GET', 'POST'])
@@ -31,7 +36,10 @@ def category():
    if 'email' not in session:
      flash('Please login first','danger')
      return redirect(url_for('login'))
-   categories = Category.query.order_by(Category.id.desc()).all()
+   # categories = Category.query.order_by(Category.id.desc()).all()
+   page = request.args.get('page',1,type=int)
+   categories = Category.query.order_by(Category.id.desc()).paginate(page=page,per_page=15)
+ 
    return render_template('admin/brand.html',title = "Brand Page",categories=categories)
 
 

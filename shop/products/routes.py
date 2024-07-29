@@ -37,10 +37,13 @@ def result():
 @app.route('/product/<int:id>')
 def single_page(id):
   product = Addproducts.query.get_or_404(id)
+  page = request.args.get('page',1,type=int)
+  products = Addproducts.query.filter(Addproducts.stock > 0).order_by(Addproducts.id.desc()).paginate(page=page,per_page=12)
+ 
   # barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
   # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
  
-  return render_template('products/single_page.html',product=product,barnds=barnds(),categories=categories())
+  return render_template('products/single_page.html',product=product,barnds=barnds(),categories=categories(),products=products)
 
 
 

@@ -1,137 +1,149 @@
 {% extends 'layout.html' %}
 {% block content %}
 
-
 {% include '_messages.html' %}
 
-
-<div class="container">
-  <nav class="navbar navbar-expand-lg bg-body-tertiary">
-    <div class="container-fluid">
-      <a class="navbar-brand" href="/admin"><h3>Admin</h3></a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavDropdown">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="/admin">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/brands">Brands</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="/category">Categories</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-              Add Products
-            </a>
-            <ul class="dropdown-menu">
-              <li><a class="dropdown-item" href="{{url_for('addproduct')}}">Add Product</a></li>
-              <li> <a class="dropdown-item" href="{{url_for('addbrand')}}">Add Brand</a></li>
-              <li><a class="dropdown-item" href="{{url_for('addcat')}}">Add Category</a></li>
-            </ul>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-</div>
+{% include 'admin/navbar1.html' %}
 
 <div class="container mt-5">
-  <table class="table table-sa table-condensed table-striped table-hover">
-    <thead>
-      <th>Sr.No</th>
-      <th>Name</th>
-      <th>Edit</th>
-      <th>Delete</th>
+  <table class="table table-hover table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Sr.No</th>
+        <th>Name</th>
+        <th>Edit</th>
+        <th>Delete</th>
+      </tr>
     </thead>
     <tbody>
       {% if brands %}
-      {% for brand in brands %}
-      <tr>
-        <td>{{loop.index}}</td>
-        <td>{{brand.name}}</td>
-        <td><a href="{{url_for('updatebrand',id=brand.id)}}" class = "btn btn-sm btn-outline-info">Edit</a></td>
-        <td>
-          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal-{{brand.id}}">
-            Delete
-          </button>
-          
-          <!-- <a href="#" class = "btn btn-sm btn-outline-danger">Delete</a> -->
-        </td>
-      </tr>
-      <!-- Button trigger modal -->
+        {% for brand in brands.items %}
+        <tr>
+          <td>{{ loop.index + brands.per_page * (brands.page - 1) }}</td>
+          <td>{{ brand.name }}</td>
+          <td><a href="{{ url_for('updatebrand', id=brand.id) }}" class="btn btn-outline-primary btn-sm">Edit</a></td>
+          <td>
+            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ brand.id }}">
+              Delete
+            </button>
 
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal-{{ brand.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ brand.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="text-danger">Are you sure you want to delete this brand "{{ brand.name }}"?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ url_for('deletebrand', id=brand.id) }}" method="POST">
+                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      {% elif categories %}
+        {% for category in categories.items %}
+        <tr>
+          <td>{{ loop.index + categories.per_page * (categories.page - 1) }}</td>
+          <td>{{ category.name }}</td>
+          <td><a href="{{ url_for('updatecat', id=category.id) }}" class="btn btn-outline-primary btn-sm">Edit</a></td>
+          <td>
+            <button type="button" class="btn btn-outline-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal-{{ category.id }}">
+              Delete
+            </button>
 
-<!-- Modal -->
-<div class="modal fade" id="exampleModal-{{brand.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">{{brand.id}}</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <span class="text-danger" >Are you sure that you want to delete this brand "{{brand.name}}"</span>     
-       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">Cancel</button>
-        <form action="{{url_for('deletebrand',id=brand.id)}}" method="POST">
-          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-     
-        </form>
-        </div>
-    </div>
-  </div>
-</div>
-
-
-
-      {% endfor %}
-      {% else %}
-
-
-      {% for category in categories %}
-      <tr>
-        <td>{{loop.index}}</td>
-        <td>{{category.name}}</td>
-        <td><a href="{{url_for('updatecat',id=category.id)}}" class = "btn btn-sm btn-outline-info">Edit</a></td>
-        <td>
-          <!-- <a href="" class = "btn btn-sm btn-outline-danger">Delete</a> -->
-          <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal-{{category.id}}">
-            Delete
-          </button>
-        </td>
-        <!-- Modal -->
-<div class="modal fade" id="exampleModal-{{category.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">{{category.id}}</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <span class="text-danger" >Are you sure that you want to delete this category "{{category.name}}"</span>     
-       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">Cancel</button>
-        <form action="{{url_for('deletecategory',id=category.id)}}" method="POST">
-          <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-     
-        </form>
-        </div>
-    </div>
-  </div>
-</div>
-
-      
-      </tr>
-      {% endfor %}
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal-{{ category.id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">{{ category.name }}</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="text-danger">Are you sure you want to delete this category "{{ category.name }}"?</p>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <form action="{{ url_for('deletecategory', id=category.id) }}" method="POST">
+                      <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
       {% endif %}
     </tbody>
   </table>
+
+  <!-- Pagination -->
+  <nav aria-label="Brand or Category pagination">
+    <ul class="pagination justify-content-center">
+      {% if brands and brands.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('brand_index', page=brands.prev_num) }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% elif categories and categories.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('category_index', page=categories.prev_num) }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+      {% endif %}
+      {% if brands %}
+        {% for page_num in brands.iter_pages(left_edge=1, right_edge=2, left_current=1, right_current=2) %}
+          {% if page_num %}
+            {% if brands.page == page_num %}
+            <li class="page-item active" aria-current="page"><span class="page-link">{{ page_num }}</span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('brand_index', page=page_num) }}">{{ page_num }}</a></li>
+            {% endif %}
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %}
+        {% endfor %}
+      {% elif categories %}
+        {% for page_num in categories.iter_pages(left_edge=1, right_edge=2, left_current=1, right_current=2) %}
+          {% if page_num %}
+            {% if categories.page == page_num %}
+            <li class="page-item active" aria-current="page"><span class="page-link">{{ page_num }}</span></li>
+            {% else %}
+            <li class="page-item"><a class="page-link" href="{{ url_for('category_index', page=page_num) }}">{{ page_num }}</a></li>
+            {% endif %}
+          {% else %}
+          <li class="page-item disabled"><span class="page-link">...</span></li>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      {% if brands and brands.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('brand_index', page=brands.next_num) }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% elif categories and categories.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="{{ url_for('category_index', page=categories.next_num) }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
 </div>
+
 {% endblock content %}

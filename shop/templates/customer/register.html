@@ -1,44 +1,88 @@
 {% extends "layout.html" %}
-
 {% block content %}
 
-{% from "_formhelpers.html" import render_field %}
-
-
 <div class="container">
-  <div class="row">
-    <div class="col-md-2"></div>
-    <div class="col-md-8">
-      <h1 class="bg-info text-center">Register</h1>
+  {% from "_formhelpers.html" import render_field %}
+  <div class="row justify-content-center">
+    <div class="col-md-8 mt-3">
+      <!-- Card Container -->
+      <div class="card shadow-lg p-4 d-flex flex-column">
+        <!-- Logo -->
+        <div class="text-center mb-4">
+          <div class="logo-container d-inline-block">
+            <img src="{{ url_for('static', filename='images/Logo.jpg') }}" alt="Logo" class="img-fluid">
+          </div>
+        </div>
+        <!-- Form Header -->
+        <div class="text-center h3 text-danger mb-4 font-weight-bold">Register</div>
+        <!-- Customer Registration Form -->
+        <form action="{{ url_for('customer_register') }}" method="post" enctype="multipart/form-data" class="flex-grow-1">
+          {{ form.csrf_token }}
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.name, class="form-control form-control-lg", placeholder="Name") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.username, class="form-control form-control-lg", placeholder="Username") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.email, class="form-control form-control-lg", placeholder="Email") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.password, class="form-control form-control-lg", placeholder="Password") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.confirm, class="form-control form-control-lg", placeholder="Confirm Password") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.state, class="form-control form-control-lg", placeholder="State") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.city, class="form-control form-control-lg", placeholder="City") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.contact, class="form-control form-control-lg", placeholder="Contact Number") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.address, class="form-control form-control-lg", placeholder="Address") }}
+            </div>
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.zipcode, class="form-control form-control-lg", placeholder="Zipcode") }}
+            </div>
+
+            <div class="col-md-6 mb-3">
+              {{ render_field(form.profile, class="form-control", placeholder="Profile Picture") }}
+            </div>
+          
+            <div class="text-end mt-4 float-left">
+              {{ form.submit(class="btn btn-info btn-lg") }}
+            </div>
+        </div>
+        </form>
+      </div>
     </div>
-    <div class="col-md-2"></div>
   </div>
-  <form action="{{ url_for('customer_register') }}" method="post" enctype="multipart/form-data">
-
-
-    <div class="row">
-      <div class="col-md-2"></div>
-      <div class="col-md-4">
-        {{render_field(form.name,class="form-control")}}
-        {{render_field(form.username,class="form-control")}}
-        {{render_field(form.email,class="form-control")}}
-        {{render_field(form.password,class="form-control")}}
-        {{render_field(form.confirm,class="form-control")}}
-        {{ form.profile(class="form-control") }}
-      </div>
-      <div class="col-md-4">
-        <!-- {{render_field(form.country,class="form-control")}}  -->
-        {{render_field(form.state,class="form-control")}}
-        {{render_field(form.city,class="form-control")}}
-        {{render_field(form.contact,class="form-control")}}
-        {{render_field(form.address,class="form-control")}}
-        {{render_field(form.zipcode,class="form-control")}}
-        {{form.submit(class="btn btn-sm btn-info mt-2 float-right")}}
-
-      </div>
-      <div class="col-md-2"></div>
-    </div>
-  </form>
 </div>
+
+<style>
+  .logo-container {
+    width: 150px; 
+    height: 150px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    overflow: hidden;
+  }
+
+  .logo-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain; 
+  }
+
+
+</style>
 
 {% endblock content %}
