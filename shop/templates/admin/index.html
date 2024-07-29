@@ -21,7 +21,16 @@
           <li class="nav-item">
             <a class="nav-link" href="/category">Categories</a>
           </li>
-          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Add Products
+            </a>
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="{{url_for('addproduct')}}">Add Product</a></li>
+              <li> <a class="dropdown-item" href="{{url_for('addbrand')}}">Add Brand</a></li>
+              <li><a class="dropdown-item" href="{{url_for('addcat')}}">Add Category</a></li>
+            </ul>
+          </li>
         </ul>
       </div>
     </div>
@@ -46,7 +55,7 @@
       <tr>
         <td>{{loop.index}}</td>
         <td>{{product.name}}</td>
-        <td>Rs.{{product.price}}</td>
+        <td>₹ {{product.price}}</td>
         <td>{{product.discount}} %</td>
         <td>{{product.brand.name}}</td>
         <td><img src="{{url_for('static',filename = 'images/' + product.image_1)}}" width="30" height="40"></td>

@@ -52,7 +52,7 @@ from shop.admin import routes,models as admin_routes
 from shop.products import routes ,models as product_routes
 from shop.carts import carts
 from shop.products.models import *
-from shop.customers import routes
+from shop.customers import routes,model 
 
 
  

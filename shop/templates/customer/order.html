@@ -41,7 +41,7 @@
           <td>{{product.name}}</td>
           <form action="{{url_for('updatecart',code=key)}}" method="post">
             <td>{{product.color|capitalize}}</td>
-          <td>Rs.{{product.price}}</td>
+          <td>₹ {{product.price}}</td>
           <td>{{product.quantity}}</td>
 
           {% if product.discount  %}
@@ -80,12 +80,12 @@
      </td>
           <!-- <td><a href="#" class="btn btn-success btn-sm">Check Out</a></td> -->
           <td width="35%"></td>
-          <td colspan="3"> <h4>Tax: Rs.{{tax}}</h4></td>
-          <td colspan="4"><h4>Grand Total: Rs.{{grandTotal}}</h4></td>
+          <td colspan="3"> <h4>Tax: ₹ {{tax}}</h4></td>
+          <td colspan="4"><h4>Grand Total: ₹ {{grandTotal}}</h4></td>
          
           <td>
             <form action="{{url_for('get_pdf',invoice=orders.invoice)}}" method="post">
-              <button type="submit" class="btn btn-sm btn-info">Get PDF</button>
+              <button type="submit" class="btn btn-sm btn-info">Get Bill</button>
             </form>
 
           </td>

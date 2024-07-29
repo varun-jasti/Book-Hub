@@ -22,7 +22,7 @@ def categories():
 @app.route('/')
 def home(): 
   page = request.args.get('page',1,type=int)
-  products = Addproducts.query.filter(Addproducts.stock > 0).order_by(Addproducts.id.desc()).paginate(page=page,per_page=10)
+  products = Addproducts.query.filter(Addproducts.stock > 0).order_by(Addproducts.id.desc()).paginate(page=page,per_page=12)
   # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
   return render_template('products/index.html',products=products,barnds=barnds(),categories=categories())
 
@@ -50,7 +50,7 @@ def single_page(id):
 def get_brand(id):
   get_b = Brand.query.filter_by(id=id).first_or_404()
   page = request.args.get('page',1,type=int)
-  brand = Addproducts.query.filter_by(brand = get_b).paginate(page=page,per_page=10)
+  brand = Addproducts.query.filter_by(brand = get_b).paginate(page=page,per_page=12)
   # barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
   # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
   return render_template('products/index.html',brand=brand,barnds=barnds(),categories=categories(),get_b=get_b)
@@ -59,7 +59,7 @@ def get_brand(id):
 def get_category(id):
   page = request.args.get('page',1,type=int)
   get_cat = Category.query.filter_by(id=id).first_or_404()
-  get_cat_prod = Addproducts.query.filter_by(category=get_cat).paginate(page=page,per_page=10)
+  get_cat_prod = Addproducts.query.filter_by(category=get_cat).paginate(page=page,per_page=12)
   # barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
   # categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
   return render_template('products/index.html',get_cat_prod=get_cat_prod,categories=categories(),barnds=barnds(),get_cat=get_cat)

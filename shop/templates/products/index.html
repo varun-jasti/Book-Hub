@@ -14,7 +14,7 @@
             <h5 class="text-white text-center position-absolute top-0 end-0 translate-middle-y" style="font-size:14px; text-shadow:1px 1px 2px #000; transform:rotate(-15deg); background-color:rgba(160, 3, 3, 0.79); padding:2px 5px;">{{b.discount}}% off</h5>
             {% endif %}
             <h5 class="card-title text-center">{{ b.name }}</h5>
-            <p class="card-text text-center">Price Rs.{{ b.price }}</p>
+            <p class="card-text text-center">Price ₹ {{ b.price }}</p>
           </div>
           <div class="card-footer d-flex justify-content-between align-items-center">
             <a href="{{url_for('single_page', id=b.id)}}" class="btn btn-primary btn-sm">Details</a>
@@ -70,7 +70,7 @@
               {% if get_cat.discount > 0 %}
               <h5 class="text-white text-center position-absolute top-0 end-0 translate-middle-y" style="font-size:14px; text-shadow:1px 1px 2px #000; transform:rotate(-15deg); background-color:rgba(160, 3, 3, 0.79); padding:2px 5px;">{{get_cat.discount}}% off</h5> {% endif %}
               <h5 class="card-title text-center">{{ get_cat.name }}</h5>
-              <p class="card-text text-center">Price Rs.{{ get_cat.price }}</p>
+              <p class="card-text text-center">Price ₹ {{ get_cat.price }}</p>
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center">
               <a href="{{url_for('single_page', id=get_cat.id)}}" class="btn btn-primary btn-sm">Details</a>
@@ -126,7 +126,7 @@
               {% if product.discount > 0 %}
               <h5 class="text-white text-center position-absolute top-0 end-0 translate-middle-y" style="font-size:14px; text-shadow:1px 1px 2px #000; transform:rotate(-15deg); background-color:rgba(160, 3, 3, 0.79); padding:2px 5px;">{{product.discount}}% off</h5>{% endif %}
               <h5 class="card-title text-center">{{ product.name }}</h5>
-              <p class="card-text text-center">Price Rs.{{ product.price }}</p>
+              <p class="card-text text-center">Price ₹ {{ product.price }}</p>
             </div>
             <div class="card-footer d-flex justify-content-between align-items-center">
               <a href="{{url_for('single_page', id=product.id)}}" class="btn btn-primary btn-sm">Details</a>

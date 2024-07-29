@@ -7,7 +7,7 @@ from .model import Register,CustomerOrder
 import secrets,os
 import json
 import pdfkit
-path_to_wkhtmltopdf = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'  # Adjust the path as necessary
+path_to_wkhtmltopdf = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'  
 config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
 
 
