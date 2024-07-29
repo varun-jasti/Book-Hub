@@ -7,8 +7,8 @@
     {% if brand %}
       {% for b in brand.items %}
       <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 shadow-lg rounded-3 border-0">
-          <div class="position-relative">
+        <div class="card h-100 shadow-lg rounded-3 border-0 clickable-card" data-href="{{ url_for('single_page', id=b.id) }}">
+          <div class="position-relative mt-3">
             <img src="{{url_for('static',filename='images/' + b.image_1)}}" alt="{{b.name}}" class="card-img-top" style="height: 200px; object-fit: contain;">
             {% if b.discount > 0 %}
             <span class="badge rounded-pill bg-danger position-absolute top-0 start-0 m-2 text-white" style="font-size: 14px;">{{b.discount}}% off</span>
@@ -16,7 +16,7 @@
           </div>
           <div class="card-body d-flex flex-column">
             <h5 class="card-title text-center mb-2">{{ b.name }}</h5>
-            <p class="card-text text-center mb-3">Price ₹ {{ b.price }}</p>
+            <p class="card-text text-center mb-3">₹ {{ b.price }}</p>
             <div class="d-flex justify-content-between align-items-center mt-auto">
               <a href="{{url_for('single_page', id=b.id)}}" class="btn btn-outline-primary btn-sm">Details</a>
               <form action="{{url_for('AddCart')}}" method="post" class="d-inline">
@@ -39,8 +39,8 @@
     {% elif get_cat_prod %}
       {% for get_cat in get_cat_prod.items %}
       <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 shadow-lg rounded-3 border-0">
-          <div class="position-relative">
+        <div class="card h-100 shadow-lg rounded-3 border-0 clickable-card" data-href="{{ url_for('single_page', id=get_cat.id) }}">
+          <div class="position-relative mt-3">
             <img src="{{url_for('static',filename='images/' + get_cat.image_1)}}" alt="{{get_cat.name}}" class="card-img-top" style="height: 200px; object-fit: contain;">
             {% if get_cat.discount > 0 %}
             <span class="badge rounded-pill bg-danger position-absolute top-0 start-0 m-2 text-white" style="font-size: 14px;">{{get_cat.discount}}% off</span>
@@ -48,7 +48,7 @@
           </div>
           <div class="card-body d-flex flex-column">
             <h5 class="card-title text-center mb-2">{{ get_cat.name }}</h5>
-            <p class="card-text text-center mb-3">Price ₹ {{ get_cat.price }}</p>
+            <p class="card-text text-center mb-3">₹ {{ get_cat.price }}</p>
             <div class="d-flex justify-content-between align-items-center mt-auto">
               <a href="{{url_for('single_page', id=get_cat.id)}}" class="btn btn-outline-primary btn-sm">Details</a>
               <form action="{{url_for('AddCart')}}" method="post" class="d-inline">
@@ -71,8 +71,8 @@
     {% else %}
       {% for product in products.items %}
       <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 shadow-lg rounded-3 border-0">
-          <div class="position-relative">
+        <div class="card h-100 shadow-lg rounded-3 border-0 clickable-card" data-href="{{ url_for('single_page', id=product.id) }}">
+          <div class="position-relative mt-3">
             <img src="{{url_for('static',filename='images/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top" style="height: 200px; object-fit: contain;">
             {% if product.discount > 0 %}
             <span class="badge rounded-pill bg-danger position-absolute top-0 start-0 m-2 text-white" style="font-size: 14px;">{{product.discount}}% off</span>
@@ -80,7 +80,7 @@
           </div>
           <div class="card-body d-flex flex-column">
             <h5 class="card-title text-center mb-2">{{ product.name }}</h5>
-            <p class="card-text text-center mb-3">Price ₹ {{ product.price }}</p>
+            <p class="card-text text-center mb-3">₹ {{ product.price }}</p>
             <div class="d-flex justify-content-between align-items-center mt-auto">
               <a href="{{url_for('single_page', id=product.id)}}" class="btn btn-outline-primary btn-sm">Details</a>
               <form action="{{url_for('AddCart')}}" method="post" class="d-inline">
@@ -199,4 +199,13 @@
     </div>
   </div>
 </div>
+
+<!-- JavaScript to handle card clicks -->
+<script>
+  document.querySelectorAll('.clickable-card').forEach(card => {
+    card.addEventListener('click', function() {
+      window.location.href = this.getAttribute('data-href');
+    });
+  });
+</script>
 {% endblock %}
