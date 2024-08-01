@@ -6,8 +6,8 @@
 
 
 
-<div class="container mt-5">
-  <div class="row">
+<div class="container mt-5 p-4">
+  <div class="row mt-4">
     <!-- Main Product Image -->
     <div class="col-md-6 d-flex justify-content-center align-items-center" id="b_image">
       <div class="card border-0 shadow-sm">
@@ -22,12 +22,9 @@
           <h4 class="card-title">{{ product.name }}</h4>
           <p class="card-text">₹ {{ product.price }}</p>
          
-
-
           {% if product.discount > 0 %}
           <p class="bg-danger text-white p-2 d-inline" style="font-size: 0.75rem;">Limited Time Deal</p>
-          <p class="card-text h5  text-danger mt-2">-{{ product.discount }} %</p>
-
+          <p class="card-text h5 text-danger mt-2">-{{ product.discount }} %</p>
           {% endif %}
           <hr>
           <b>Description</b>
@@ -35,22 +32,44 @@
           <hr>
           <form action="{{ url_for('AddCart') }}" method="post">
             <input type="hidden" name="product_id" value="{{ product.id }}">
-            <button type="submit" class="btn btn-primary btn-lg">Add to Cart</button>
+            <div class="d-flex align-items-center">
+                <button type="submit" class="btn btn-primary btn-lg me-2">Add to Cart</button>
+                
+                <!-- Stock Warning Message -->
+                {% if product.stock < 10 %}
+                <div class="alert text-danger mb-0">
+                  Few items left, hurry up!
+                </div>
+                {% endif %}
+            </div>
+            
             <div class="mt-3">
               <label for="quantity" class="form-label">Quantity:</label>
-              <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
-            </div>
+              <div class="input-group">
+                  <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
+                  <span class="input-group-text bg-light border-start-0">
+                      <i class="bi bi-cart-check text-success" id="quantityIcon"></i>
+                  </span>
+              </div>
+              <small id="quantityHelp" class="form-text text-muted mt-1">
+                  Available Stock limit is {{ product.stock }}.
+              </small>
+        
+          </div>
+          
+            
             {% set colors = product.colors.split(',') %}
             <div class="mt-3">
-              <label for="colors" class="form-label">Colors:</label>
-              <select name="colors" id="colors" class="form-select">
-                {% for color in colors %}
-                  {% set col = color.split(':') %}
-                  <option value="{{ col[0] }}">{{ col[0]|capitalize }}</option>
-                {% endfor %}
-              </select>
+                <label for="colors" class="form-label">Colors:</label>
+                <select name="colors" id="colors" class="form-select">
+                    {% for color in colors %}
+                        {% set col = color.split(':') %}
+                        <option value="{{ col[0] }}">{{ col[0]|capitalize }}</option>
+                    {% endfor %}
+                </select>
             </div>
-          </form>
+        </form>
+        
         </div>
       </div>
     </div>
@@ -59,7 +78,6 @@
   <!-- Additional Images -->
   <div class="row mt-4">
     <div class="col-md-12">
-      
       <div class="d-flex flex-wrap" id="s_image">
         <img src="{{ url_for('static', filename='images/' + product.image_1) }}" alt="{{ product.name }}" class="img-thumbnail mx-2 img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
         <img src="{{ url_for('static', filename='images/' + product.image_2) }}" alt="{{ product.name }}" class="img-thumbnail mx-2 img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
@@ -70,9 +88,6 @@
   </div>
 </div>
 
-
-
-</div>
 <script>
   var b_image = document.getElementById('b_image');
   var s_image = document.getElementById('s_image').getElementsByTagName('img');
@@ -85,14 +100,6 @@
     b_image.innerHTML = "<img src = " + ImageSRC + " width='400' height='400'>"
   }
 </script>
-
-
-
-
-
-
-
-
 
 <!-- latest books cards -->
 <div class="container mt-4">
@@ -208,7 +215,6 @@
               </a>
             </li>
             {% endif %}
-            
           </ul>
         </nav>
       {% elif get_cat_prod %}
@@ -221,7 +227,6 @@
               </a>
             </li>
             {% endif %}
-            
           </ul>
         </nav>
       {% else %}
@@ -234,7 +239,6 @@
               </a>
             </li>
             {% endif %}
-            
           </ul>
         </nav>
       {% endif %}
@@ -250,9 +254,5 @@
     });
   });
 </script>
-
-
-
-
 
 {% endblock content %}

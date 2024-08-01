@@ -4,13 +4,14 @@ from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
 from flask_bcrypt import Bcrypt
 from flask_uploads import IMAGES, UploadSet, configure_uploads
-import os
+import os,stripe
+from dotenv import load_dotenv
 
 from flask_msearch import Search
 from flask_login import LoginManager
 from flask_migrate import Migrate
 basedir = os.path.abspath(os.path.dirname(__file__))
-
+load_dotenv()
 app = Flask(__name__)
 
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///myshop.db"
@@ -20,6 +21,9 @@ app.config['UPLOADED_PHOTOS_DEST'] = os.path.join(basedir, 'static/images')
 app.config['MSEARCH_BACKEND'] = 'whoosh'  # or another supported backend
 app.config['MSEARCH_INDEX_NAME'] = 'msearch'
 app.config['MSEARCH_ENABLE'] = True
+
+stripe.api_key = os.getenv('STRIPE_SECRET_KEY' )
+stripe_public_key = os.getenv('STRIPE_PUBLIC_KEY')
 
 
 photos = UploadSet('photos', IMAGES)

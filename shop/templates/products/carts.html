@@ -3,9 +3,9 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="container mt-4">
+<div class="container mt-4 p-5">
   {% include '_messages.html' %}
-  <div class="row">
+  <div class="row mt-4">
     <div class="col-md-12">
       <!-- Cart Table -->
       <div class="card shadow-lg">
@@ -47,7 +47,7 @@
                   </td>
                   <td>₹ {{ product.price }}</td>
                   <td>
-                    <input type="number" name="quantity" min="1" max="10" value="{{ product.quantity }}" class="form-control form-control-sm">
+                    <input type="number" name="quantity" min="1" max="15" value="{{ product.quantity }}" class="form-control form-control-sm">
                   </td>
                   {% if product.discount %}
                   <td>{{ product.discount }} % &nbsp; &nbsp; is ₹ {{ discount }}</td>

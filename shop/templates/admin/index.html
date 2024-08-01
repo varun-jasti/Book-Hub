@@ -13,6 +13,7 @@
       <tr>
         <th>Sr.No</th>
         <th>Product</th>
+        <th>Current Stock</th>
         <th>Price</th>
         <th>Discount</th>
         <th>Brand</th>
@@ -26,6 +27,10 @@
       <tr>
         <td>{{ loop.index + products.per_page * (products.page - 1) }}</td>
         <td>{{ product.name }}</td>
+        <td>
+          {% set cart_quantity = session['Shoppingcart'][product.id]['quantity'] if 'Shoppingcart' in session and product.id in session['Shoppingcart'] else 0 %}
+          {{ product.stock - cart_quantity }}
+        </td>
         <td>₹ {{ product.price }}</td>
         <td>{{ product.discount }}%</td>
         <td>{{ product.brand.name }}</td>

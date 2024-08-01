@@ -1,7 +1,7 @@
 from flask import redirect,render_template,url_for,flash,request,session,current_app
 from shop import db,app
 from shop.products.models import Addproducts
-from shop.products.routes import barnds,categories
+from shop.products.routes import barnds,categories,get_brand,get_category
 import json
 
 
@@ -50,18 +50,38 @@ def AddCart():
 
 @app.route('/carts')
 def getCart():
-  if 'Shoppingcart' not in session or len(session['Shoppingcart'])<=0:
-    return redirect(url_for('home'))
-  sub_total = 0
-  grand_total = 0
-  for key, product in session['Shoppingcart'].items():
-    discount = (product['discount']/100 )* float(product['price'])
-    sub_total+=float(product['price'])*int(product['quantity'])
-    sub_total-=discount
-    tax = ("%.2f"%(.06 *float(sub_total)))
-    grand_total = float("%.2f" % (1.06 * sub_total))
+    if 'Shoppingcart' not in session or len(session['Shoppingcart']) <= 0:
+        return redirect(url_for('home'))
+    
+    sub_total = 0
+    grand_total = 0
+    updated_cart = {}
+    
+    for key, product in session['Shoppingcart'].items():
+        db_product = Addproducts.query.get_or_404(key)
+        quantity = int(product['quantity'])
+        
+        # Check if the requested quantity exceeds available stock
+        if quantity > db_product.stock:
+            quantity = db_product.stock  # Adjust quantity to available stock
+            session['Shoppingcart'][key]['quantity'] = quantity
+            flash(f'The quantity of {db_product.name} has been adjusted to available stock limit.', 'warning')
+        
+        discount = (product['discount'] / 100) * float(product['price'])
+        sub_total += float(product['price']) * quantity
+        sub_total -= discount
+        tax = ("%.2f" % (.06 * float(sub_total)))
+        grand_total = float("%.2f" % (1.06 * sub_total))
+        
+        updated_cart[key] = {
+            'name': product['name'],
+            'price': product['price'],
+            'discount': product['discount'],
+            'quantity': quantity
+        }
+    
+    return render_template('products/carts.html', tax=tax, grand_total=grand_total, brands=barnds(), categories=categories())
 
-  return render_template('products/carts.html',tax=tax,grand_total=grand_total,barnds=barnds(),categories=categories())
 
 
 

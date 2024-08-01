@@ -10,33 +10,69 @@ import pdfkit
 path_to_wkhtmltopdf = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'  
 config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
 
+from shop.products.models import Brand,Category  
+from shop.products.models import Addproducts
+
 
 import stripe
-publishable_key ='pk_test_51PhSlGSEMl2j1m5C6DFOBqQUgd3hWgHV7BcoOyaGNcWWWRXQ0r1UQKGajRbNqwQhFEHA6Ec3xX1HNXoEzbV6wUEB00WLzelE4W'
-stripe.api_key ='sk_test_51PhSlGSEMl2j1m5C2WuIjO5lDrTNEELmMMwRSHxQ88T8DfdW5Dh0a0EqwlPlZLTNGyJwDj2YBRn1ntxzwjXIZR1q00X7VpMYH2'
+publishable_key ='pk_test_51PhSlGSEMl2j1m5C4EO0LtDybXB8EukPZL00H71SKqjIl0HsazE4cYMa5rHGZTbqqEKuMPjwGSE76xWhGkiJ7ukb00xQnvq9SW'
+stripe.api_key ='sk_test_51PhSlGSEMl2j1m5CJ0dAFRclRBIibRdLcDFrZHVw6FLBbBQxe6eYYlPM7FUHxIUBX38wDTPGRE4NJmdl2yVo8BwX0020yDEKRg'
 
-@app.route('/payment',methods=['POST'])
+YOUR_DOMAIN = 'http://localhost:5000'
+
+@app.route('/payment', methods=['POST'])
+@login_required
 def payment():
+    amount = int(request.form.get('amount'))
     invoice = request.form.get('invoice')
-    amount = request.form.get('amount')
-    customer = stripe.Customer.create(
-      email=request.form['stripeEmail'],
-      source=request.form['stripeToken'],
-    )
-    charge = stripe.Charge.create(
-      customer=customer.id,
-      description='shop',
-      amount=amount,
-      currency='inr',
-    )
-    orders =  CustomerOrder.query.filter_by(customer_id = current_user.id,invoice=invoice).order_by(CustomerOrder.id.desc()).first()
-    orders.status = 'Paid'
-    db.session.commit()
-    return redirect(url_for('thanks'))
+    description = request.form.get('description')
+    customer_email = current_user.email   # You might want to set this dynamically based on your use case
+
+    try:
+        checkout_session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[
+                {
+                    'price_data': {
+                        'currency': 'usd',
+                        'product_data': {
+                            'name': description,
+                        },
+                        'unit_amount': amount,
+                    },
+                    'quantity': 1,
+                },
+            ],
+            mode='payment',
+            success_url=YOUR_DOMAIN + '/thanks?invoice=' + invoice,
+            cancel_url=YOUR_DOMAIN + '/cancel',
+            customer_email=customer_email,
+        )
+    except Exception as e:
+        return str(e)
+
+    return redirect(checkout_session.url, code=303)
 
 @app.route('/thanks')
+@login_required
 def thanks():
+    invoice = request.args.get('invoice')
+    if not current_user.is_authenticated:
+        return redirect(url_for('login'))  # Redirect to login page if not authenticated
+
+    orders = CustomerOrder.query.filter_by(customer_id=current_user.id, invoice=invoice).order_by(CustomerOrder.id.desc()).first()
+    if orders:
+        orders.status = 'Paid'
+        db.session.commit()
     return render_template('customer/thank.html')
+
+
+@app.route('/cancel')
+def cancel():
+    return render_template('customer/cancel.html')
+
+
+
 
 
 
@@ -69,7 +105,7 @@ def customerLogin():
         flash('Incorrect email and password','danger')
         return redirect(url_for('customerLogin'))
             
-    return render_template('customer/login.html', form=form)
+    return render_template('customer/login.html', form=form,title = "Login Page")
 
 
 
@@ -154,3 +190,20 @@ def get_pdf(invoice):
             response.headers['content-Disposition'] ='inline; filename='+invoice+'.pdf'
             return response
     return request(url_for('orders'))
+
+
+def barnds():
+  barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
+  return barnds
+
+def categories():
+    categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
+    return categories
+
+
+@app.route('/dashboard')
+def dashboard():
+    customer_id = current_user.id
+    customer = Register.query.filter_by(id=customer_id).first()
+    
+    return render_template('customer/user_dashboard.html',customer=customer,barnds=barnds(),categories=categories())

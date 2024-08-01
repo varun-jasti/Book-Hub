@@ -29,9 +29,11 @@ def home():
 @app.route('/result')
 def result():
   searchword = request.args.get('q')
-  products =Addproducts.query_msearch(searchword, fields=['name','desc'],limits=6)
+  products = Addproducts.query.filter(
+      Addproducts.name.like('%' + searchword + '%') |  # Search by name
+      Addproducts.desc.like('%' + searchword + '%')   # Search by description
+  ).limit(6)
   return render_template('products/result.html',products=products,barnds=barnds(),categories=categories())
-
 
  
 @app.route('/product/<int:id>')
@@ -136,8 +138,8 @@ def addcat():
 
 @app.route('/updatecat/<int:id>',methods =['GET','POST'])
 def updatecat(id):
-  #  if 'email' not in session:
-  #    flash(f'Please login first','danger')
+   if 'email' not in session:
+     flash(f'Please login first','danger')
    updatecat = Category.query.get_or_404(id)
    category = request.form.get('category')
    if request.method == "POST":
@@ -201,6 +203,7 @@ def updateproduct(id):
   form = AddproductForm(request.form)
   if request.method == "POST":
     product.name = form.name.data
+    product.stock = form.stock.data
     product.price = form.price.data
     product.discount = form.discount.data
     product.brand_id = brand
@@ -229,7 +232,7 @@ def updateproduct(id):
         product.image_3 = photos.save(request.files.get('image_3'),name=secrets.token_hex(10)+".")
 
     db.session.commit()
-    flash(f'You product has been updated','success')
+    flash(f'You Book has been updated','success')
     return redirect(url_for('admin'))
   
   form.name.data = product.name
@@ -258,3 +261,5 @@ def deleteproduct(id):
   flash(f'Cannot delete the product','danger')
 
   return redirect(url_for('admin'))
+
+
