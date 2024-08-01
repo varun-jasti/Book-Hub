@@ -40,14 +40,13 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
 
    ```bash
    git clone https://github.com/varun-jasti/Book-Hub.git
-   cd shop
+   
    ```
 
-2. **Create and Activate Virtual Environment**
+2. **Activate Virtual Environment**
 
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   cd base/Scripts/Activate.ps1  #to activate the virtual environment
    ```
 
 3. **Install Dependencies**
@@ -56,18 +55,28 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
    pip install -r requirements.txt
    ```
 
-4. **Initialize Database**
+4. **Verify Flask-Migrate**:
+   ```bash
+   pip show flask-migrate
+   ```
+   If it’s not installed, install it using:
+   ```bash
+   pip install flask-migrate
+   ```
+
+6. **Initialize Database**
 
    ```bash
+   set Flask_APP = run.py
    flask db init
    flask db migrate -m "Initial migration"
    flask db upgrade
    ```
 
-5. **Run the Application**
+7. **Run the Application**
 
    ```bash
-   flask run
+   python run.py
    ```
 
    Visit `http://127.0.0.1:5000` in your browser.
