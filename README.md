@@ -40,14 +40,13 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
 
    ```bash
    git clone https://github.com/varun-jasti/Book-Hub.git
-   cd shop
+   
    ```
 
-2. **Create and Activate Virtual Environment**
+2. **Activate Virtual Environment**
 
    ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   cd base/Scripts/Activate.ps1  # to activate the virtual environment
    ```
 
 3. **Install Dependencies**
@@ -56,18 +55,29 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
    pip install -r requirements.txt
    ```
 
-4. **Initialize Database**
-
+4. **Verify Flask-Migrate**:
    ```bash
+   pip show flask-migrate
+   ```
+   If it’s not installed, install it using:
+   ```bash
+   pip install flask-migrate
+   ```
+
+6. **Initialize Database**
+   
+   ```bash
+   # In the root folder
+   set Flask_APP = run.py
    flask db init
    flask db migrate -m "Initial migration"
    flask db upgrade
    ```
 
-5. **Run the Application**
+7. **Run the Application**
 
    ```bash
-   flask run
+   python run.py
    ```
 
    Visit `http://127.0.0.1:5000` in your browser.
@@ -191,48 +201,15 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Sample Imagess of our project
 
-![image_1](sample_images/image_1.png)\
-
-<table>
-  <tr>
-    <td><img src="sample_images/image_1" alt="Image 1" width="100" height="100"></td>
-    <td><img src="sample_images/image_2" alt="Image 2" width="100" height="100"></td>
-    <td><img src="sample_images/image_3" alt="Image 3" width="100" height="100"></td>
-  </tr>
-  <tr>
-    <td><img src="sample_images/image_4" alt="Image 4" width="100" height="100"></td>
-    <td><img src="sample_images/image_5" alt="Image 5" width="100" height="100"></td>
-    <td><img src="sample_images/image_6" alt="Image 6" width="100" height="100"></td>
-  </tr>
-  <tr>
-    <td><img src="sample_images/image_7" alt="Image 7" width="100" height="100"></td>
-    <td><img src="sample_images/image_8" alt="Image 8" width="100" height="100"></td>
-    <td><img src="sample_images/image_9" alt="Image 9" width="100" height="100"></td>
-  </tr>
-  <tr>
-    <td><img src="sample_images/image_10" alt="Image 10" width="100" height="100"></td>
-    <td></td>
-    <td></td>
-  </tr>
-</table>
+![image_1](sample_images/image_1.png)
 
 
-<table>
-  <tr>
-    <td><img src="sample_images/image_2.png" alt="Image 2" width="100" height="100"></td>
-    <td><img src="sample_images/image_3.png" alt="Image 3" width="100" height="100"></td>
-    <td><img src="sample_images/image_4.png" alt="Image 4" width="100" height="100"></td>
-  </tr>
-  <tr>
-    <td><img src="sample_images/image_5.png" alt="Image 5" width="100" height="100"></td>
-    <td><img src="sample_images/image_6.png" alt="Image 6" width="100" height="100"></td>
-    <td><img src="sample_images/image_7.png" alt="Image 7" width="100" height="100"></td>
-  </tr>
-  <tr>
-    <td><img src="sample_images/image_8.png" alt="Image 8" width="100" height="100"></td>
-    <td><img src="sample_images/image_9.png" alt="Image 9" width="100" height="100"></td>
-    <td><img src="sample_images/image_10.png" alt="Image 10" width="100" height="100"></td>
-  </tr>
-</table>
+
+| ![Image 2](sample_images/image_2.png) | ![Image 3](sample_images/image_3.png) | ![Image 4](sample_images/image_4.png) |
+|:--------------------------------------:|:--------------------------------------:|:--------------------------------------:|
+| ![Image 5](sample_images/image_5.png) | ![Image 6](sample_images/image_6.png) | ![Image 7](sample_images/image_7.png) |
+| ![Image 8](sample_images/image_8.png) | ![Image 9](sample_images/image_9.png) | ![Image 10](sample_images/image_10.png) |
+
+
 
 
