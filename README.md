@@ -46,7 +46,7 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
 2. **Activate Virtual Environment**
 
    ```bash
-   cd base/Scripts/Activate.ps1  #to activate the virtual environment
+   cd base/Scripts/Activate.ps1  # to activate the virtual environment
    ```
 
 3. **Install Dependencies**
@@ -65,8 +65,9 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
    ```
 
 6. **Initialize Database**
-   In the root folder
+   
    ```bash
+   # In the root folder
    set Flask_APP = run.py
    flask db init
    flask db migrate -m "Initial migration"
