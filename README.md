@@ -65,7 +65,7 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
    ```
 
 6. **Initialize Database**
-
+   In the root folder
    ```bash
    set Flask_APP = run.py
    flask db init
