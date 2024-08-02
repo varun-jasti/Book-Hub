@@ -3,10 +3,10 @@
 {% block content %}
 {% include 'navbar.html' %}
 
-<div class="container mt-4 p-5">
+<div class="container mt-3 p-5">
   {% include '_messages.html' %}
-  <div class="row p-5 mt-3">
-    <div class="col-md-12 mt-4">
+  <div class="row p-5">
+    <div class="col-md-12">
       <!-- Order Details -->
       <div class="card shadow-lg mb-4">
         <div class="card-body">
@@ -16,7 +16,7 @@
             <strong>Status:</strong> {{ orders.status }}<br>
             <strong>Customer Name:</strong> {{ customer.name }}<br>
             <strong>Customer Email:</strong> {{ customer.email }}<br>
-            <!-- <strong>Customer Contact:</strong> {{ customer.contact }}<br> -->
+            <strong>Customer Contact:</strong> {{ customer.contact }}<br>
           </p>
         </div>
       </div>
@@ -66,23 +66,18 @@
             <tr>
               <td>
                 {% if orders.status == 'Paid' %}
-                <span class="text-success">Paid</span>
+                  <span class="text-success">Paid</span>
                 {% else %}
                 <form action="{{ url_for('payment') }}" method="POST">
-                  {% set amount = grandTotal.replace('.', '') %}
-                  <input type="hidden" name="amount" value="{{ amount }}">
-                  <input type="hidden" name="invoice" value="{{ orders.invoice }}">
-                  <script src="https://checkout.stripe.com/checkout.js"
-                    class="stripe-button"
-                    data-key="pk_test_MaILxTYQ15v5Uhd6NKI9wPdD00qdL0QZSl"
-                    data-name="{{ customer.name }}"
-                    data-description="Shop Purchase"
-                    data-amount="{{ amount }}"
-                    data-currency="inr">
-                  </script>
-                </form>
+                    {% set amount = grandTotal.replace('.', '') %}
+                    <input type="hidden" name="amount" value="{{ amount }}">
+                    <input type="hidden" name="invoice" value="{{ orders.invoice }}">
+                    <input type="hidden" name="description" value="Shop Purchase">
+                    <button type="submit" class="btn btn-primary">Pay Now</button>
+                  </form>
                 {% endif %}
               </td>
+              
               <td width="35%"></td>
               <td colspan="3">
                 <h4 class="text-muted">Tax: ₹ {{ tax }}</h4>

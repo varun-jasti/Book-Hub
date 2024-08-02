@@ -1,258 +1,39 @@
-{% extends "layout.html" %}
-
+{% extends 'layout.html' %}
 {% block content %}
-
-{% include 'navbar.html' %} 
-
-
-
-<div class="container mt-5 p-4">
+{% include 'navbar.html' %}
+<div class="container mt-4 p-5">
   <div class="row mt-4">
-    <!-- Main Product Image -->
-    <div class="col-md-6 d-flex justify-content-center align-items-center" id="b_image">
-      <div class="card border-0 shadow-sm">
-        <img src="{{ url_for('static', filename='images/' + product.image_1) }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-width: 100%; height: auto;">
-      </div>
-    </div>
-    
-    <!-- Product Details -->
-    <div class="col-md-6">
-      <div class="card border-0 shadow-sm p-3">
-        <div class="card-body">
-          <h4 class="card-title">{{ product.name }}</h4>
-          <p class="card-text">₹ {{ product.price }}</p>
-         
-          {% if product.discount > 0 %}
-          <p class="bg-danger text-white p-2 d-inline" style="font-size: 0.75rem;">Limited Time Deal</p>
-          <p class="card-text h5 text-danger mt-2">-{{ product.discount }} %</p>
-          {% endif %}
-          <hr>
-          <b>Description</b>
-          <p class="card-text">{{ product.desc }}</p>
-          <hr>
-          <form action="{{ url_for('AddCart') }}" method="post">
-            <input type="hidden" name="product_id" value="{{ product.id }}">
-            <div class="d-flex align-items-center">
-                <button type="submit" class="btn btn-primary btn-lg me-2">Add to Cart</button>
-                
-                <!-- Stock Warning Message -->
-                {% if product.stock < 10 %}
-                <div class="alert text-danger mb-0">
-                  Few items left, hurry up!
+        {% for product in products %}
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="card h-100 shadow-lg rounded-3 border-0 clickable-card" data-href="{{ url_for('single_page', id=product.id) }}">
+                <div class="position-relative mt-3">
+                    <img src="{{ url_for('static', filename='images/' + product.image_1) }}" alt="{{ product.name }}" class="card-img-top" style="height: 200px; object-fit: contain;">
+                    {% if product.discount > 0 %}
+                    <span class="badge rounded-pill bg-danger position-absolute top-0 start-0 m-2 text-white" style="font-size: 14px;">{{ product.discount }}% off</span>
+                    {% endif %}
                 </div>
-                {% endif %}
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title text-center mb-2">{{ product.name }}</h5>
+                    <p class="card-text text-center mb-3">₹ {{ product.price }}</p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <a href="{{ url_for('single_page', id=product.id) }}" class="btn btn-outline-primary btn-sm">Details</a>
+                        <form action="{{ url_for('AddCart') }}" method="post" class="d-inline">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <button type="submit" class="btn btn-warning btn-sm">Add to Cart</button>
+                            <input type="hidden" name="quantity" value="1">
+                            {% set colors = product.colors.split(',') %}
+                            <select name="colors" class="d-none">
+                                {% for color in colors %}
+                                {% set col = color.split(':') %}
+                                <option value="{{ col[0] }}">{{ col[0] | capitalize }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                    </div>
+                </div>
             </div>
-            
-            <div class="mt-3">
-              <label for="quantity" class="form-label">Quantity:</label>
-              <div class="input-group">
-                  <input type="number" name="quantity" id="quantity" value="1" min="1" max="{{ product.stock }}" class="form-control">
-                  <span class="input-group-text bg-light border-start-0">
-                      <i class="bi bi-cart-check text-success" id="quantityIcon"></i>
-                  </span>
-              </div>
-              <small id="quantityHelp" class="form-text text-muted mt-1">
-                  Available Stock limit is {{ product.stock }}.
-              </small>
-        
-          </div>
-          
-            
-            {% set colors = product.colors.split(',') %}
-            <div class="mt-3">
-                <label for="colors" class="form-label">Colors:</label>
-                <select name="colors" id="colors" class="form-select">
-                    {% for color in colors %}
-                        {% set col = color.split(':') %}
-                        <option value="{{ col[0] }}">{{ col[0]|capitalize }}</option>
-                    {% endfor %}
-                </select>
-            </div>
-        </form>
-        
         </div>
-      </div>
+        {% endfor %}
     </div>
-  </div>
-
-  <!-- Additional Images -->
-  <div class="row mt-4">
-    <div class="col-md-12">
-      <div class="d-flex flex-wrap" id="s_image">
-        <img src="{{ url_for('static', filename='images/' + product.image_1) }}" alt="{{ product.name }}" class="img-thumbnail mx-2 img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
-        <img src="{{ url_for('static', filename='images/' + product.image_2) }}" alt="{{ product.name }}" class="img-thumbnail mx-2 img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
-        <img src="{{ url_for('static', filename='images/' + product.image_3) }}" alt="{{ product.name }}" class="img-thumbnail mx-2 img-fluid rounded" style="width: 100px; height: 100px; object-fit: cover;">
-      </div>
-      <hr>
-    </div>
-  </div>
 </div>
-
-<script>
-  var b_image = document.getElementById('b_image');
-  var s_image = document.getElementById('s_image').getElementsByTagName('img');
-  for(var i=0;i<s_image.length;i++){
-    s_image[i].addEventListener('click',full_image);
-  }
-
-  function full_image() {
-    var ImageSRC  = this.getAttribute('src');
-    b_image.innerHTML = "<img src = " + ImageSRC + " width='400' height='400'>"
-  }
-</script>
-
-<!-- latest books cards -->
-<div class="container mt-4">
-  <div class="row">
-    {% if brand %}
-      {% for b in brand.items %}
-      <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 shadow-lg rounded-3 border-0 clickable-card" data-href="{{ url_for('single_page', id=b.id) }}">
-          <div class="position-relative">
-            <img src="{{url_for('static',filename='images/' + b.image_1)}}" alt="{{b.name}}" class="card-img-top" style="height: 200px; object-fit: contain;">
-            {% if b.discount > 0 %}
-            <span class="badge rounded-pill bg-danger position-absolute top-0 start-0 m-2 text-white" style="font-size: 14px;">{{b.discount}}% off</span>
-            {% endif %}
-          </div>
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-center mb-2">{{ b.name }}</h5>
-            <p class="card-text text-center mb-3">Price ₹ {{ b.price }}</p>
-            <div class="d-flex justify-content-between align-items-center mt-auto">
-              <a href="{{url_for('single_page', id=b.id)}}" class="btn btn-outline-primary btn-sm">Details</a>
-              <form action="{{url_for('AddCart')}}" method="post" class="d-inline">
-                <input type="hidden" name="product_id" value="{{b.id}}">
-                <button type="submit" class="btn btn-warning btn-sm">Add to Cart</button>
-                <input type="hidden" name="quantity" value="1">
-                {% set colors = b.colors.split(',') %}
-                <select name="colors" class="d-none">
-                  {% for color in colors %}
-                  {% set col=color.split(':') %}
-                  <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
-                  {% endfor %}
-                </select>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    {% elif get_cat_prod %}
-      {% for get_cat in get_cat_prod.items %}
-      <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 shadow-lg rounded-3 border-0 clickable-card" data-href="{{ url_for('single_page', id=get_cat.id) }}">
-          <div class="position-relative">
-            <img src="{{url_for('static',filename='images/' + get_cat.image_1)}}" alt="{{get_cat.name}}" class="card-img-top" style="height: 200px; object-fit: contain;">
-            {% if get_cat.discount > 0 %}
-            <span class="badge rounded-pill bg-danger position-absolute top-0 start-0 m-2 text-white" style="font-size: 14px;">{{get_cat.discount}}% off</span>
-            {% endif %}
-          </div>
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-center mb-2">{{ get_cat.name }}</h5>
-            <p class="card-text text-center mb-3">Price ₹ {{ get_cat.price }}</p>
-            <div class="d-flex justify-content-between align-items-center mt-auto">
-              <a href="{{url_for('single_page', id=get_cat.id)}}" class="btn btn-outline-primary btn-sm">Details</a>
-              <form action="{{url_for('AddCart')}}" method="post" class="d-inline">
-                <input type="hidden" name="product_id" value="{{get_cat.id}}">
-                <button type="submit" class="btn btn-warning btn-sm">Add to Cart</button>
-                <input type="hidden" name="quantity" value="1">
-                {% set colors = get_cat.colors.split(',') %}
-                <select name="colors" class="d-none">
-                  {% for color in colors %}
-                  {% set col=color.split(':') %}
-                  <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
-                  {% endfor %}
-                </select>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    {% else %}
-      {% for product in products.items %}
-      <div class="col-md-3 col-sm-6 mb-4">
-        <div class="card h-100 shadow-lg rounded-3 border-0 clickable-card" data-href="{{ url_for('single_page', id=product.id) }}">
-          <div class="position-relative">
-            <img src="{{url_for('static',filename='images/' + product.image_1)}}" alt="{{product.name}}" class="card-img-top" style="height: 200px; object-fit: contain;">
-            {% if product.discount > 0 %}
-            <span class="badge rounded-pill bg-danger position-absolute top-0 start-0 m-2 text-white" style="font-size: 14px;">{{product.discount}}% off</span>
-            {% endif %}
-          </div>
-          <div class="card-body d-flex flex-column">
-            <h5 class="card-title text-center mb-2">{{ product.name }}</h5>
-            <p class="card-text text-center mb-3">Price ₹ {{ product.price }}</p>
-            <div class="d-flex justify-content-between align-items-center mt-auto">
-              <a href="{{url_for('single_page', id=product.id)}}" class="btn btn-outline-primary btn-sm">Details</a>
-              <form action="{{url_for('AddCart')}}" method="post" class="d-inline">
-                <input type="hidden" name="product_id" value="{{product.id}}">
-                <button type="submit" class="btn btn-warning btn-sm">Add to Cart</button>
-                <input type="hidden" name="quantity" value="1">
-                {% set colors = product.colors.split(',') %}
-                <select name="colors" class="d-none">
-                  {% for color in colors %}
-                  {% set col=color.split(':') %}
-                  <option value="{{col[0]}}">{{col[0]|capitalize}}</option>
-                  {% endfor %}
-                </select>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-    {% endif %}
-  </div>
-
-  <div class="row mt-4">
-    <div class="col text-center">
-      {% if brand %}
-        <nav aria-label="Brand pagination">
-          <ul class="pagination justify-content-center">
-            {% if brand.has_prev %}
-            <li class="page-item">
-              <a class="page-link" href="{{url_for('get_brand', id=get_b.id, page=brand.prev_num)}}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            {% endif %}
-          </ul>
-        </nav>
-      {% elif get_cat_prod %}
-        <nav aria-label="Category pagination">
-          <ul class="pagination justify-content-center">
-            {% if get_cat_prod.has_prev %}
-            <li class="page-item">
-              <a class="page-link" href="{{url_for('get_cat', id=get_c.id, page=get_cat_prod.prev_num)}}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            {% endif %}
-          </ul>
-        </nav>
-      {% else %}
-        <nav aria-label="Product pagination">
-          <ul class="pagination justify-content-center">
-            {% if products.has_prev %}
-            <li class="page-item">
-              <a class="page-link" href="{{url_for('home', page=products.prev_num)}}" aria-label="Previous">
-                <span aria-hidden="true">&laquo;</span>
-              </a>
-            </li>
-            {% endif %}
-          </ul>
-        </nav>
-      {% endif %}
-    </div>
-  </div>
-</div>
-
-<!-- JavaScript to handle card clicks -->
-<script>
-  document.querySelectorAll('.clickable-card').forEach(card => {
-    card.addEventListener('click', function() {
-      window.location.href = this.getAttribute('data-href');
-    });
-  });
-</script>
-
 {% endblock content %}

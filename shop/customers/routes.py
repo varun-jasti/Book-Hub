@@ -115,12 +115,19 @@ def customer_logout():
     return redirect(url_for('home'))
 
 #remove unwanted details from shoping cart
+# def updateshoppingcart():
+#     for key, shopping in session['Shoppingcart'].items():
+#         session.modified = True
+#         del shopping['image']
+#         del shopping['colors']
+#     return updateshoppingcart
 def updateshoppingcart():
-    for key, shopping in session['Shoppingcart'].items():
-        session.modified = True
-        del shopping['image']
-        del shopping['colors']
-    return updateshoppingcart
+    if 'Shoppingcart' in session:
+        for key, shopping in session['Shoppingcart'].items():
+            session.modified = True
+            # Remove unwanted details
+            shopping.pop('image_1', None)  # Use pop with default to avoid KeyError
+            shopping.pop('colors', None) # Use pop with default to avoid KeyError
 
 
 @app.route('/getorder')
