@@ -3,7 +3,7 @@ from flask_login import login_required,current_user,login_user,logout_user
 from shop import db,app,photos,search,bcrypt,login_manager
 from .forms import CustomerRegistration,CustomerLoginFrom
 from .model import Register,CustomerOrder
-
+from datetime import datetime, timedelta
 import secrets,os
 import json
 import pdfkit
@@ -57,14 +57,14 @@ def payment():
 @login_required
 def thanks():
     invoice = request.args.get('invoice')
-    if not current_user.is_authenticated:
-        return redirect(url_for('login'))  # Redirect to login page if not authenticated
+    # if not current_user.is_authenticated:
+    #     return redirect(url_for('login'))  # Redirect to login page if not authenticated
 
     orders = CustomerOrder.query.filter_by(customer_id=current_user.id, invoice=invoice).order_by(CustomerOrder.id.desc()).first()
     if orders:
         orders.status = 'Paid'
         db.session.commit()
-    return render_template('customer/thank.html')
+    return render_template('customer/thank.html',orders=orders)
 
 
 @app.route('/cancel')
@@ -130,6 +130,7 @@ def updateshoppingcart():
             shopping.pop('colors', None) # Use pop with default to avoid KeyError
 
 
+
 @app.route('/getorder')
 @login_required
 def get_order():
@@ -148,8 +149,8 @@ def get_order():
             print(e)
             flash('Some thing went wrong while get order', 'danger')
             return redirect(url_for('getCart'))
+    
         
-
 @app.route('/orders/<invoice>')
 @login_required
 def orders(invoice):
@@ -165,6 +166,7 @@ def orders(invoice):
             subTotal -= discount
             tax = ("%.2f" % (.06 * float(subTotal)))
             grandTotal = ("%.2f" % (1.06 * float(subTotal)))
+
 
     else:
         return redirect(url_for('customerLogin'))

@@ -13,13 +13,19 @@
           <p class="lead mb-4">
             Your order has been successfully placed. We appreciate your patience and will process your order as soon as possible.
           </p>
-    
-          <a href="{{ url_for('home') }}" class="btn btn-primary btn-lg">Back to Home</a>
+          
+          <div class="d-flex justify-content-center gap-2">
+            <a href="{{ url_for('home') }}" class="btn btn-outline-primary btn-lg" style="width: 200px;">Back to Home</a>
+            <form action="{{ url_for('get_pdf', invoice=orders.invoice) }}" method="post" class="mb-0">
+              <button type="submit" class="btn btn-outline-primary btn-lg" style="width: 200px;">Get Bill</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
 
 <!-- Include Bootstrap Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">

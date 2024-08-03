@@ -64,6 +64,15 @@
         <div class="card-body">
           <table class="table table-borderless">
             <tr>
+              
+              
+              <td width="35%"></td>
+              <td colspan="3">
+                <h4 class="text-muted p-3">Tax: ₹ {{ tax }}</h4>
+              </td>
+              <td colspan="4">
+                <h4 class="text-muted fw-bold p-3">Grand Total: ₹ {{ grandTotal }}</h4>
+              </td>
               <td>
                 {% if orders.status == 'Paid' %}
                   <span class="text-success">Paid</span>
@@ -73,23 +82,11 @@
                     <input type="hidden" name="amount" value="{{ amount }}">
                     <input type="hidden" name="invoice" value="{{ orders.invoice }}">
                     <input type="hidden" name="description" value="Shop Purchase">
-                    <button type="submit" class="btn btn-primary">Pay Now</button>
+                    <button type="submit" class="btn btn-outline-primary btn-lg">Pay Now</button>
                   </form>
                 {% endif %}
               </td>
               
-              <td width="35%"></td>
-              <td colspan="3">
-                <h4 class="text-muted">Tax: ₹ {{ tax }}</h4>
-              </td>
-              <td colspan="4">
-                <h4 class="text-muted fw-bold">Grand Total: ₹ {{ grandTotal }}</h4>
-              </td>
-              <td>
-                <form action="{{ url_for('get_pdf', invoice=orders.invoice) }}" method="post">
-                  <button type="submit" class="btn btn-outline-primary btn-lg">Get Bill</button>
-                </form>
-              </td>
             </tr>
           </table>
         </div>
