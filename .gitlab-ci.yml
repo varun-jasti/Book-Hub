@@ -10,7 +10,8 @@ variables:
 
 before_script:
   - python -m venv $VENV_DIR
-  - source $VENV_DIR/Scripts/activate  # For bash
+  - source $VENV_DIR/Scripts/Activate.ps1 
+  - pip install pytest # For bash
 
 build:
   stage: build
