@@ -46,6 +46,7 @@ def category():
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
     form = RegistrationForm(request.form)
+    
     if request.method == 'POST' and form.validate():
         hash_password = bcrypt.generate_password_hash (form.password.data)
 

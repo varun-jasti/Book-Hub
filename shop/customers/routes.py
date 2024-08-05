@@ -3,15 +3,17 @@ from flask_login import login_required,current_user,login_user,logout_user
 from shop import db,app,photos,search,bcrypt,login_manager
 from .forms import CustomerRegistration,CustomerLoginFrom
 from .model import Register,CustomerOrder
-from datetime import datetime, timedelta
+from shop.products.models import Brand,Category  
+from shop.products.models import Addproducts
 import secrets,os
 import json
 import pdfkit
+
+from ..serializers import serialize_customer, serialize_order
+
+
 path_to_wkhtmltopdf = 'C:/Program Files/wkhtmltopdf/bin/wkhtmltopdf.exe'  
 config = pdfkit.configuration(wkhtmltopdf=path_to_wkhtmltopdf)
-
-from shop.products.models import Brand,Category  
-from shop.products.models import Addproducts
 
 
 import stripe
@@ -26,7 +28,7 @@ def payment():
     amount = int(request.form.get('amount'))
     invoice = request.form.get('invoice')
     description = request.form.get('description')
-    customer_email = current_user.email   # You might want to set this dynamically based on your use case
+    customer_email = current_user.email   
 
     try:
         checkout_session = stripe.checkout.Session.create(
@@ -48,23 +50,36 @@ def payment():
             cancel_url=YOUR_DOMAIN + '/cancel',
             customer_email=customer_email,
         )
+
     except Exception as e:
         return str(e)
 
     return redirect(checkout_session.url, code=303)
 
-@app.route('/thanks')
-@login_required
-def thanks():
-    invoice = request.args.get('invoice')
-    # if not current_user.is_authenticated:
-    #     return redirect(url_for('login'))  # Redirect to login page if not authenticated
 
+
+
+@app.route('/thanks')
+def thanks():
+
+    products = session.get('products', {})  # Get products from session
+    # print("Products in payment:", products)  # Print products for debugging
+
+    for product_id, quantity in products.items():
+        product = Addproducts.query.get(product_id)
+        product.stock = product.stock - quantity
+        try:
+            db.session.commit()
+            flash('Product quantity updated successfully.', 'success')
+        except Exception as e:
+            db.session.rollback()
+            flash(f'Error updating product: {e}', 'danger')
+    invoice = request.args.get('invoice')
     orders = CustomerOrder.query.filter_by(customer_id=current_user.id, invoice=invoice).order_by(CustomerOrder.id.desc()).first()
     if orders:
         orders.status = 'Paid'
         db.session.commit()
-    return render_template('customer/thank.html',orders=orders)
+    return render_template('customer/thank.html')
 
 
 @app.route('/cancel')
@@ -73,12 +88,10 @@ def cancel():
 
 
 
-
-
-
 @app.route('/customer/register',methods=['GET','POST'])
 def customer_register():
   form = CustomerRegistration()
+#   print(form.data)
   if form.validate_on_submit():
     hash_password = bcrypt.generate_password_hash(form.password.data)
     register = Register(name=form.name.data,username=form.username.data,email=form.email.data,password = hash_password ,
@@ -86,6 +99,7 @@ def customer_register():
                         zipcode=form.zipcode.data)
     
     db.session.add(register)
+    # print("session is added")
     flash(f'Welcome {form.name.data}, Thank you for registering','success')
     db.session.commit()
     return redirect(url_for('login'))
@@ -99,7 +113,8 @@ def customerLogin():
         user = Register.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user)
-            flash('You are login now!', 'success')
+            
+            flash(f'You are login now!', 'success')
             next = request.args.get('next')
             return redirect(next or url_for('home'))
         flash('Incorrect email and password','danger')
@@ -114,20 +129,14 @@ def customer_logout():
     logout_user()
     return redirect(url_for('home'))
 
-#remove unwanted details from shoping cart
-# def updateshoppingcart():
-#     for key, shopping in session['Shoppingcart'].items():
-#         session.modified = True
-#         del shopping['image']
-#         del shopping['colors']
-#     return updateshoppingcart
+
 def updateshoppingcart():
     if 'Shoppingcart' in session:
         for key, shopping in session['Shoppingcart'].items():
             session.modified = True
-            # Remove unwanted details
-            shopping.pop('image_1', None)  # Use pop with default to avoid KeyError
-            shopping.pop('colors', None) # Use pop with default to avoid KeyError
+            shopping.pop('image', None)  
+            shopping.pop('colors', None) 
+
 
 
 
@@ -149,28 +158,55 @@ def get_order():
             print(e)
             flash('Some thing went wrong while get order', 'danger')
             return redirect(url_for('getCart'))
-    
         
+
+
+
 @app.route('/orders/<invoice>')
 @login_required
 def orders(invoice):
     if current_user.is_authenticated:
         grandTotal = 0
         subTotal = 0
+        tax = 0
+
         customer_id = current_user.id
         customer = Register.query.filter_by(id=customer_id).first()
         orders = CustomerOrder.query.filter_by(customer_id=customer_id).order_by(CustomerOrder.id.desc()).first()
-        for _key, product in orders.orders.items():
-            discount = (product['discount']/100) * float(product['price'])
-            subTotal += float(product['price']) * int(product['quantity'])
-            subTotal -= discount
-            tax = ("%.2f" % (.06 * float(subTotal)))
-            grandTotal = ("%.2f" % (1.06 * float(subTotal)))
+
+        products = {} 
+
+        if orders:
+            for _key, product in orders.orders.items():
+
+                try:
+                    product_id = _key  
+                    quantity = int(product['quantity'])
+                    products[product_id] = quantity
+
+                
+                    discount = (product['discount'] / 100) * float(product['price'])
+                    subTotal += float(product['price']) * quantity
+                    subTotal -= discount
+
+                except KeyError as e:
+                    print(f"KeyError: {e} for product {product}")
 
 
+            tax = "%.2f" % (0.06 * float(subTotal))
+            grandTotal = "%.2f" % (1.06 * float(subTotal))
+
+            # Store the dictionary of product IDs and quantities in session
+            session['products'] = products
+            # print(products)
+
+        else:
+            flash('No orders found.', 'warning')
+        
     else:
         return redirect(url_for('customerLogin'))
-    return render_template('customer/order.html', tax=tax,subTotal=subTotal,grandTotal=grandTotal,customer=customer,orders=orders)
+
+    return render_template('customer/order.html', tax=tax, subTotal=subTotal, grandTotal=grandTotal, customer=customer, orders=orders, products=products)
 
 
 
@@ -200,7 +236,6 @@ def get_pdf(invoice):
             return response
     return request(url_for('orders'))
 
-
 def barnds():
   barnds = Brand.query.join(Addproducts,(Brand.id == Addproducts.brand_id)).all()
   return barnds
@@ -209,10 +244,14 @@ def categories():
     categories = Category.query.join(Addproducts,(Category.id==Addproducts.category_id)).all()
     return categories
 
-
 @app.route('/dashboard')
 def dashboard():
     customer_id = current_user.id
-    customer = Register.query.filter_by(id=customer_id).first()
-    
-    return render_template('customer/user_dashboard.html',customer=customer,barnds=barnds(),categories=categories())
+    customer = serialize_customer(Register.query.filter_by(id=customer_id).first())
+    # print(customer)
+
+    orders = CustomerOrder.query.filter_by(customer_id=customer_id).order_by(CustomerOrder.id.desc()).all()
+    orders = [serialize_order(order) for order in orders]
+    # print("orders",orders)
+
+    return render_template('customer/user_dashboard.html', customer=customer, brands=barnds(), categories=categories(), orders=orders)
