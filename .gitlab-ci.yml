@@ -9,7 +9,6 @@ variables:
   VENV_DIR: "base"
 
 before_script:
-  - python -m venv $VENV_DIR
   - source $VENV_DIR/Scripts/activate
   - pip install pytest # For bash
 
