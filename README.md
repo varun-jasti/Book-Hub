@@ -49,13 +49,16 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
    cd base/Scripts/Activate.ps1  # to activate the virtual environment
    ```
 
-3. **Install Dependencies**
-
+3. **Install Dependencies** 
+     (optional step as the virtual environment consists all the required packages)
    ```bash
    pip install -r requirements.txt
    ```
-
+   
+ (If you want to use a new database follow this step or else skip 4,5)
+ 
 4. **Verify Flask-Migrate**:
+   (if you want to use a new database follow this step or else skip 4,5)
    ```bash
    pip show flask-migrate
    ```
@@ -64,7 +67,7 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
    pip install flask-migrate
    ```
 
-6. **Initialize Database**
+5. **Initialize Database**
    
    ```bash
    # In the root folder
@@ -74,7 +77,7 @@ Welcome to the Book Hub! This project is a full-featured online bookstore applic
    flask db upgrade
    ```
 
-7. **Run the Application**
+6. **Run the Application**
 
    ```bash
    python run.py
