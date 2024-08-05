@@ -8,20 +8,14 @@ variables:
   VENV_DIR: "base"
 
 before_script:
-  # Install PowerShell on the Python image
-  - apt-get update
-  - apt-get install -y wget apt-transport-https software-properties-common
-  - wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -cs)/prod.list" -O /etc/apt/sources.list.d/mssql-release.list
-  - apt-get update
-  - apt-get install -y powershell
-  - pwsh -Command "& { ./$VENV_DIR/Scripts/Activate.ps1 }"
+  - python -m venv $VENV_DIR
+  - source $VENV_DIR/bin/activate
 
 
 build:
   stage: build
   script:
     - echo "Building the project..."
-    # Add build commands here
 
 deploy:
   stage: deploy
@@ -29,4 +23,4 @@ deploy:
     - echo "Deploying the project..."
     # Add your deployment commands here
   only:
-    - main  # Change to your branch name if different
+    - main  # Runs the deploy job only on the main branch
