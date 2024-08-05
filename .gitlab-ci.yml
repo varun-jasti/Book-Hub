@@ -10,8 +10,7 @@ variables:
 
 before_script:
   - python -m venv $VENV_DIR
-  - source $VENV_DIR/Scripts/Activate.ps1
-  # Install pytest if not using requirements.txt
+  - source $VENV_DIR/Scripts/activate  # For bash
 
 build:
   stage: build
@@ -21,7 +20,7 @@ build:
 test:
   stage: test
   script:
-    - pytest  # Run tests with pytest
+    - pytest  # Adjust this to your testing command
 
 deploy:
   stage: deploy
