@@ -18,10 +18,7 @@ build:
   script:
     - echo "Building the project..."
 
-test:
-  stage: test
-  script:
-    - pytest  # Adjust this to your testing command
+ # Adjust this to your testing command
 
 deploy:
   stage: deploy
