@@ -3,6 +3,7 @@ image: python:3.8
 stages:
   - build
   - deploy
+  - promote
 
 variables:
   VENV_DIR: "base"
@@ -10,17 +11,28 @@ variables:
 before_script:
   - python -m venv $VENV_DIR
   - source $VENV_DIR/bin/activate
-
+# Install dependencies if needed
 
 build:
   stage: build
   script:
     - echo "Building the project..."
+    # Add your build commands here
 
 deploy:
   stage: deploy
   script:
-    - echo "Deploying the project..."
-    # Add your deployment commands here
+    - echo "Deploying to staging environment..."
+    # Add your staging deployment commands here
   only:
     - main  # Runs the deploy job only on the main branch
+
+promote_to_production:
+  stage: promote
+  script:
+    - echo "Promoting to production environment..."
+    - echo "Deploying to production environment..."
+    # Add your production deployment commands here
+  only:
+    - tags  # Change this to your specific branch or tag if different
+  when: manual  # Manual trigger to promote to production
