@@ -1,4 +1,4 @@
-image: mcr.microsoft.com/windows/servercore:ltsc2022  # Use a Windows image
+image: mcr.microsoft.com/powershell
 
 stages:
   - build
@@ -8,21 +8,20 @@ variables:
   VENV_DIR: "base"
 
 before_script:
-  - powershell -ExecutionPolicy Bypass -Command "& { python -m venv $env:VENV_DIR }"
-  - powershell -ExecutionPolicy Bypass -Command "& { .\$env:VENV_DIR\Scripts\Activate.ps1 }"
-
+  # Activate virtual environment using PowerShell
+  - powershell -ExecutionPolicy Bypass -File $VENV_DIR\Scripts\Activate.ps1
 
 build:
   stage: build
   script:
-    - powershell -ExecutionPolicy Bypass -Command "& { echo 'Building the project...' }"
+    - echo "Building the project..."
     # Add build commands here
-
 
 deploy:
   stage: deploy
   script:
-    - powershell -ExecutionPolicy Bypass -Command "& { echo 'Deploying the project...' }"
-    # Add your deployment commands here
+    - echo "Deploying the project..."
+    # Add your deployment commands here, e.g.,
+    # - powershell -File deploy_script.ps1
   only:
-    - main  # Replace with 'master' if your branch is named 'master'
+    - main  # Change to your branch name if different
