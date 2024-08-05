@@ -1,4 +1,4 @@
-image: mcr.microsoft.com/powershell
+image: python:3.8
 
 stages:
   - build
@@ -8,8 +8,14 @@ variables:
   VENV_DIR: "base"
 
 before_script:
-  # Activate virtual environment using PowerShell
-  - powershell -ExecutionPolicy Bypass -File $VENV_DIR\Scripts\Activate.ps1
+  # Install PowerShell on the Python image
+  - apt-get update
+  - apt-get install -y wget apt-transport-https software-properties-common
+  - wget -q "https://packages.microsoft.com/config/ubuntu/$(lsb_release -cs)/prod.list" -O /etc/apt/sources.list.d/mssql-release.list
+  - apt-get update
+  - apt-get install -y powershell
+  - pwsh -Command "& { ./$VENV_DIR/Scripts/Activate.ps1 }"
+
 
 build:
   stage: build
@@ -21,7 +27,6 @@ deploy:
   stage: deploy
   script:
     - echo "Deploying the project..."
-    # Add your deployment commands here, e.g.,
-    # - powershell -File deploy_script.ps1
+    # Add your deployment commands here
   only:
     - main  # Change to your branch name if different
