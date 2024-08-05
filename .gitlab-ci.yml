@@ -2,7 +2,6 @@ image: python:3.8
 
 stages:
   - build
-  - test
   - deploy
 
 variables:
