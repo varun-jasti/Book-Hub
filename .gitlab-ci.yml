@@ -1,4 +1,4 @@
-image: python:3.8
+image: mcr.microsoft.com/windows/servercore:ltsc2022  # Use a Windows image
 
 stages:
   - build
@@ -8,20 +8,21 @@ variables:
   VENV_DIR: "base"
 
 before_script:
-  - source $VENV_DIR/Scripts/activate
-  - pip install pytest # For bash
+  - powershell -ExecutionPolicy Bypass -Command "& { python -m venv $env:VENV_DIR }"
+  - powershell -ExecutionPolicy Bypass -Command "& { .\$env:VENV_DIR\Scripts\Activate.ps1 }"
+
 
 build:
   stage: build
   script:
-    - echo "Building the project..."
+    - powershell -ExecutionPolicy Bypass -Command "& { echo 'Building the project...' }"
+    # Add build commands here
 
- # Adjust this to your testing command
 
 deploy:
   stage: deploy
   script:
-    - echo "Deploying the project..."
+    - powershell -ExecutionPolicy Bypass -Command "& { echo 'Deploying the project...' }"
     # Add your deployment commands here
   only:
-    - master
+    - main  # Replace with 'master' if your branch is named 'master'
